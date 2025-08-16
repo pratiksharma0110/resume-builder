@@ -1,0 +1,78 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[left=1.5cm, right=1.5cm, top=1.7cm, bottom=1.7cm]{geometry}
+\usepackage{paracol}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=blue
+}
+
+\setlist[itemize]{noitemsep, topsep=0pt}
+
+\titleformat{\section}{\Large\bfseries}{}{0em}{}[\titlerule]
+\titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[ -- ]
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+  {\huge \bf {{.Name}} } \\
+    \smallskip
+    \faPhone~{{.Phone}} \quad
+    \faMapMarker*~{{.Location}} \quad
+    \faEnvelope~\href{mailto:{{.Email}}}{{.Email}} \quad
+    \href{https://github.com/{{.Github}}}{\faGithub}
+\end{center}
+
+\vspace{0.3cm}
+
+\noindent\textbf{Introduction:} {{.Introduction}}
+
+\section*{Education}
+{{range .Education}}
+\noindent{\bf {{.Institution}}} \hfill {{.Year}} \\
+\noindent {{.Degree}}, {{.Major}} \hfill {{.Location}}
+{{end}}
+
+
+
+\section*{Skills}
+\textbf{Programming Languages:} {{range .Skills.Programming}}{{.}}, {{end}} \\
+\textbf{Frameworks \& Tools:} {{range .Skills.Frameworks}}{{.}}, {{end}} \\
+\textbf{Other Skills:} {{range .Skills.Other}}{{.}}, {{end}} \\
+\textbf{Soft Skills:} {{range .Skills.Soft}}{{.}}, {{end}}\\
+
+\section*{Work Experience}
+{{range .Experience}}
+\noindent \bf {{.Title}} \hfill {{.Start}} – {{.End}} \\
+\hspace*{0.5cm}{{.Company}}
+\begin{itemize}
+{{range .Bullets}}
+    \item {{.}}
+{{end}}
+\end{itemize}
+{{end}}
+
+\section*{Projects}
+\begin{itemize}
+{{range .Projects}}
+    \item \bf {{.Name}}  ({{.Tech}}) – {{.Summary}}
+{{end}}
+\end{itemize}
+
+\section*{Achievements}
+\begin{itemize}
+{{range .Achievements}}
+    \item \bf {{.Name}} – {{.Event}} ({{.Date}})
+{{end}}
+\end{itemize}
+
+\end{document}
+
