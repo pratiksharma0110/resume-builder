@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"regexp"
 
 	"fmt"
 	"log"
@@ -163,12 +164,39 @@ func init() {
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 
-	//reader := bufio.NewReader(os.Stdin)
+	name := readInput(reader, "Name: ")
+
+	var email string
+	emailRegex := regexp.MustCompile(`^[\w._%+-]+@[\w.-]+\.[a-zA-Z]{2,}$`)
+	for {
+		fmt.Print("Email: ")
+		emailInput, _ := reader.ReadString('\n')
+		email = strings.TrimSpace(emailInput)
+		if emailRegex.MatchString(email) {
+			break
+		}
+		fmt.Println("Invalid email format. Please enter again.")
+	}
+
+	var phone string
+	phoneRegex := regexp.MustCompile(`^\d{10}$`)
+	for {
+		fmt.Print("Phone: ")
+		phoneInput, _ := reader.ReadString('\n')
+		phone = strings.TrimSpace(phoneInput)
+		if phoneRegex.MatchString(phone) {
+			break //
+		}
+		fmt.Println("Invalid phone number. Please enter exactly 10 digits.")
+	}
+
+	// resume strcut to generate tex file based on template
 
 	resume := Resume{
-		Name:         readInput(reader, "Name: "),
-		Email:        readInput(reader, "Email: "),
-		Phone:        readInput(reader, "Phone: "),
+
+		Name:         name,
+		Email:        email,
+		Phone:        phone,
 		Location:     readInput(reader, "Location: "),
 		Github:       readInput(reader, "Github: "),
 		Introduction: readInput(reader, "Introduction: "),
@@ -216,16 +244,21 @@ func main() {
 	}
 
 	if char == 121 || char == 89 {
-		cmd := exec.Command("pdflatex", "-output-directory=output", fullPath)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err := cmd.Run()
-		if err != nil {
-			log.Fatal(err)
+		//ensure that pdflatex is installed on system
+		if _, err := exec.LookPath("pdflatex"); err != nil {
+			fmt.Println("pdflatex not found in your system. PDF compilation skipped!")
+		} else {
+			cmd := exec.Command("pdflatex", "-output-directory=output", fullPath)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			err := cmd.Run()
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Printf("\n%v.pdf generated successfully in output folder!", outFileName)
 		}
-		fmt.Printf("\n%v.pdf generated successfully in output folder!", outFileName)
 	} else {
-		fmt.Println("pdf compilation skipped. you can compile pdf later !!")
+		fmt.Println("PDF compilation skipped. You can compile PDF later!!")
 	}
 
 }
